@@ -1,0 +1,10 @@
+exec_prefix=${prefix}/bin
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: libsnd
+Version: ${version}
+URL: https://gitlab.com/axfab/kora-libsnd
+Description: Basic interface to play music and sound.
+Cflags: -I${includedir}
+Libs: -L${libdir} -lsnd
