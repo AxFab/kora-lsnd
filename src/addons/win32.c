@@ -23,9 +23,6 @@
 
 #pragma comment(lib, "Winmm.lib")
 
-#define SND_FN_PAUSE 40
-#define SND_FN_VOLUME 41
-
 struct snd_win_spk {
     HWAVEOUT handle;
     int buf_count;

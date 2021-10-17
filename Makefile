@@ -22,38 +22,47 @@ srcdir = $(topdir)/src
 
 all: libsnd
 
+install: $(prefix)/lib/libsnd.so install-headers
+
 include $(topdir)/make/build.mk
 include $(topdir)/make/check.mk
 include $(topdir)/make/targets.mk
 
+CFLAGS ?= -Wall -Wextra -Wno-unused-parameter -ggdb
+
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
 disto ?= kora
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-SRCS += $(wildcard $(srcdir)/*.c)
-SRCS += $(srcdir)/addons/disto-$(disto).c
+SRCS_l += $(wildcard $(srcdir)/*.c)
+SRCS_l += $(srcdir)/addons/$(disto).c
 
-CFLAGS ?= -Wall -Wextra -Wno-unused-parameter -ggdb
-CFLAGS += -I$(topdir)/include
-CFLAGS += -fPIC
+CFLAGS_l += $(CFLAGS)
+CFLAGS_l += -I$(topdir)/include
+CFLAGS_l += -fPIC
 
-LFLAGS += -lm
-
-
-ifeq ($(disto),kora)
-CFLAGS += -D_GNU_SOURCE
+ifneq ($(sysdir),)
+CFLAGS_l += -I$(sysdir)/include
+LFLAGS_l += -L$(sysdir)/lib
 endif
 
 
-$(eval $(call link_shared,snd,SRCS,LFLAGS))
+$(eval $(call comp_source,l,CFLAGS_l))
+$(eval $(call link_shared,snd,SRCS_l,LFLAGS_l,l))
 
 
-# install-headers:
-# 	$(S) mkdir -p $(prefix)/include
-# 	$(S) cp -RpP -f $(topdir)/snd.h $(prefix)/include/snd.h
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+install-headers: $(patsubst $(topdir)/%,$(prefix)/%,$(wildcard $(topdir)/include/*.h))
+
+$(prefix)/include/%.h: $(topdir)/include/%.h
+	$(S) mkdir -p $(dir $@)
+	$(V) cp -vrP $< $@
+
 
 check: $(patsubst %,val_%,$(CHECKS))
 
 ifeq ($(NODEPS),)
-include $(call fn_deps,SRCS)
+-include $(call fn_deps,SRCS_l,l)
 endif

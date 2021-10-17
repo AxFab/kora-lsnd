@@ -23,6 +23,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#ifndef O_BINARY
+# define O_BINARY 0
+#endif
 typedef struct wav_header wav_header_t;
 
 struct wav_header {
