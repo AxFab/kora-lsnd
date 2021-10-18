@@ -58,7 +58,7 @@ static int win32_wav_close(snd_stream_t* strm)
 {
     struct snd_win_spk* spk = strm->data;
     if (spk == NULL)
-        return;
+        return -1;
 
     waveOutClose(spk->handle);
     for (int i = 0; i < spk->buf_count; ++i) {

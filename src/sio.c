@@ -40,11 +40,14 @@ double snd_write_value(snd_buffer_t* buf, int channel, int idx, double val)
 {
     int k = idx * buf->fmt.channel + channel;
     if (buf->fmt.word_size == 1)
-        ((uint8_t*)buf->ptr)[k] = val * 128 + 128.0;
+        ((uint8_t*)buf->ptr)[k] = (uint8_t)(val * 128 + 128.0);
     else if (buf->fmt.word_size == 2)
-        ((int16_t*)buf->ptr)[k] = val * 32768.0;
+        ((int16_t*)buf->ptr)[k] = (int16_t)(val * 32768.0);
     else if (buf->fmt.word_size == 4)
-        ((int32_t*)buf->ptr)[k] = val * 2147483648.0;
+        ((int32_t*)buf->ptr)[k] = (int32_t)(val * 2147483648.0);
+    else
+        return 0.0;
+    return val;
 }
 
 snd_buffer_t* snd_alloc_buffer(snd_format_t* format)
@@ -192,8 +195,8 @@ void snd_convert(snd_buffer_t* in, snd_buffer_t* out)
 
     for (int to = 0;; ++to) {
         double ti = (double)to * (double)in->fmt.sample_rate / (double)out->fmt.sample_rate;
-        int bl = floor(ti);
-        int up = ceil(ti);
+        int bl = (int)floor(ti);
+        int up = (int)ceil(ti);
         double r = ti - bl;
         if (up >= in->size)
             break;

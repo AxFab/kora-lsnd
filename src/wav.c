@@ -53,7 +53,7 @@ static int snd_wav_rewind(snd_stream_t* strm, int ms)
     return -1;
 }
 
-static void snd_wav_wr_close(snd_stream_t* strm)
+static int snd_wav_wr_close(snd_stream_t* strm)
 {
     wav_header_t header;
     header.chunk_id = 0x46464952;
@@ -73,8 +73,8 @@ static void snd_wav_wr_close(snd_stream_t* strm)
     int fd = (int)strm->data;
     lseek(fd, 0, SEEK_SET);
     write(fd, &header, sizeof(header));
-    if (fd != 0)
-        close(fd);
+    close(fd);
+    return 0;
 }
 
 int snd_wav_open_input(snd_stream_t* strm, const char* path)
