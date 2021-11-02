@@ -65,9 +65,17 @@ LIBAPI snd_stream_t* snd_open_speaker(snd_format_t* format, int device);
 LIBAPI int snd_volume(snd_stream_t* strm, int level);
 
 
-LIBAPI int snd_play_at(snd_stream_t* input, bool loop, bool* until, void(*callback)(void*, snd_buffer_t*), void* arg);
+LIBAPI int snd_play_raw(snd_format_t* format, bool* until, int(*producer)(void*, snd_buffer_t*), void* producer_arg, int(*consumer)(void*, snd_buffer_t*), void* consumer_arg);
 LIBAPI int snd_play(snd_stream_t* input, snd_stream_t* output, bool loop, bool* until);
-LIBAPI int snd_play_wavefile(const char* filename, bool loop, bool* until);
+LIBAPI int snd_convert_and_play(snd_stream_t* input, snd_stream_t* output, bool loop, bool* until);
+LIBAPI int snd_play_file(const char* filename, bool loop, bool* until);
 
+
+// Ideas
+LIBAPI int snd_gain(snd_buffer_t* buffer, int gain);
+LIBAPI int snd_mix_buffer(snd_buffer_t* buffer, int count, ...);
+LIBAPI int snd_mixer(snd_stream_t* output, int count, ...);
+LIBAPI int snd_speed(snd_stream_t* input, snd_stream_t* output, float speed);
+LIBAPI int snd_pitch(snd_stream_t* input, snd_stream_t* output, float pitch);
 
 #endif /*_SND_H */
