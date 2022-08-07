@@ -42,9 +42,9 @@ static int win32_wav_write(snd_stream_t* strm, snd_buffer_t* buf)
         spk->buf_pen = 0;
 
     while ((spk->bufs[spk->buf_pen].dwFlags & WHDR_DONE) == 0) {
-        xtime xs;
-        xs.sec = 0;
-        xs.nsec = 10 * 1000000;
+        struct timespec xs;
+        xs.tv_sec = 0;
+        xs.tv_nsec = 10 * 1000000;
         thrd_sleep(&xs, NULL);
     }
 
